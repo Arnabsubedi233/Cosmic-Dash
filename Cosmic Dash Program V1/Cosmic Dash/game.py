@@ -36,14 +36,18 @@ def game():
     running = True
     #game paused variable
     game_paused = False
-
-    #load button images
-    resume_img = pygame.image.load("Cosmic Dash Program V1/Cosmic Dash/images/buttonresume.png")
-    exit_img = pygame.image.load("Cosmic Dash Program V1/Cosmic Dash/images/buttonquit.png")
-
-    #button instance
+    game_val = "main"
+    
+    #load button images and button instances
+    resume_img = pygame.image.load("images/buttonresume.png")
+    exit_img = pygame.image.load("images/buttonquit.png")
+    menu_img = pygame.image.load("images/Menu Button.png")
     resume_button = buttons.Button(250,125,resume_img,0.5)
-    exit_button = buttons.Button(250,250,exit_img,0.5)
+    exit_button = buttons.Button(250,375,exit_img,0.5)
+    menu_button = buttons.Button(250,250,menu_img,0.5)
+    
+    #settings page buttons
+    
 
     # Setup the clock for a decent framerate
     clock = pygame.time.Clock()
@@ -95,6 +99,9 @@ def game():
     all_sprites = pygame.sprite.Group()
     all_sprites.add(player)
     all_sprites.add(floor)
+    menu_border = pygame.image.load("images/menuborder.png")
+
+    
 
     SPEEDUPEVENT = pygame.USEREVENT + 1
     pygame.time.set_timer(SPEEDUPEVENT, 6500)
@@ -151,10 +158,10 @@ def game():
             if event.type == pygame.QUIT:
                 running = False
             
-            # When user presses the spacebar the avatar will jump
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE and y_change == 0:
-                    y_change = 22
+                # When user presses the spacebar the avatar will jump
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE and y_change == 0:
+                        y_change = 24
     
         # This checks the avatars current position 
         # And changes its position when needed
@@ -179,9 +186,13 @@ def game():
             obs_x = 850
             obs_spd = (random.randint(5,10) * spd_multi)
 
-        # Add Life Point system here (Currently ends game at collision)
-        if ply_rect.colliderect(obs_rect):
-            return
+            # Add Life Point system here (Currently ends game at collision)
+            if ply_rect.colliderect(obs_rect):
+                return
 
+
+
+        
+        
         # Update the display
         pygame.display.flip()
