@@ -97,3 +97,4 @@ def home():
         #displays on screen
         pygame.display.flip()
 home()
+

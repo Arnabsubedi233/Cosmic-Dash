@@ -2,6 +2,10 @@ import pygame
 import buttons
 import random
 
+
+
+
+
 def game():
     pygame.init()
 
@@ -34,8 +38,19 @@ def game():
 
     # Variable to keep the main loop running
     running = True
-    #game paused variable
+    #States
+    Main_menu = True
+    settings = False
+    Game_over = False
     game_paused = False
+    Game = False
+
+   
+
+
+
+    #game paused variable
+    
     game_val = "main"
     
     #load button images and button instances
@@ -101,11 +116,14 @@ def game():
     all_sprites.add(player)
     all_sprites.add(floor)
     menu_border = pygame.image.load("images/menuborder.png")
+    life = 0 
 
     
 
     SPEEDUPEVENT = pygame.USEREVENT + 1
     pygame.time.set_timer(SPEEDUPEVENT, 6500)
+
+
     while running:
         
         # Scrolling background
@@ -125,6 +143,8 @@ def game():
             minutes=minutes, millis=millis, seconds=seconds)
         font.render_to(screen, (10, 20), out,pygame.Color('white'))
 
+     
+
 
         # Checks if background has scrolled to beggining
         bgx -= (2*spd_multi)
@@ -137,6 +157,7 @@ def game():
 
         #check if game is paused
         if game_paused == True:
+            screen.blit(menu_border,(-16,60))
             if resume_button.draw(screen):
                 game_paused = False
             if exit_button.draw(screen):
@@ -188,8 +209,8 @@ def game():
 
                 # Add Life Point system here (Currently ends game at collision)
             if ply_rect.colliderect(obs_rect):
-                 import Cosmic_Dash 
-                 break
+                return
+
                 
                
              
