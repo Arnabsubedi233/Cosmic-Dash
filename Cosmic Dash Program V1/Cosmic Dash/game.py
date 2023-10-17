@@ -1,5 +1,6 @@
 import pygame
 import buttons
+import random
 
 def game():
     pygame.init()
@@ -25,8 +26,8 @@ def game():
     game_paused = False
 
     #load button images
-    resume_img = pygame.image.load("images/button_resume.png")
-    exit_img = pygame.image.load("images/button_quit.png")
+    resume_img = pygame.image.load("Cosmic Dash Program V1/Cosmic Dash/images/buttonresume.png")
+    exit_img = pygame.image.load("Cosmic Dash Program V1/Cosmic Dash/images/buttonquit.png")
 
     #button instance
     resume_button = buttons.Button(250,125,resume_img,0.5)
@@ -38,11 +39,11 @@ def game():
     # Define a Player object by extending pygame.sprite.Sprite
     # The surface drawn on the screen is now an attribute of 'player'
     class Player(pygame.sprite.Sprite):
-        def __init__(self):
+        def __init__(self,image,left):
             super(Player, self).__init__()
-            self.surf = pygame.image.load("images/avatar.png").convert()
+            self.surf = pygame.image.load(image).convert()
             self.surf.set_colorkey((255, 255, 255), RLEACCEL)
-            self.rect = self.surf.get_rect(bottomleft=(50,500))
+            self.rect = self.surf.get_rect(bottomleft= left)
 
     class Sprite(pygame.sprite.Sprite):
         def __init__(self,image,top_left):
@@ -53,9 +54,9 @@ def game():
         
 
 
-    player = Player() 
-    floor = Sprite("images/Template_Floor.jpg",(0,500))
-    background = Sprite("images/Cosmicbackground.jpg",(0,0))
+    player = Player("Cosmic Dash Program V1/Cosmic Dash/images/avatar.png",(50,500))
+    floor = Sprite("Cosmic Dash Program V1/Cosmic Dash/images/Template_Floor.jpg",(0,500))
+    background = Sprite("Cosmic Dash Program V1/Cosmic Dash/images/Cosmicbackground.jpg",(0,0))
     y_change = 0
     gravity = 1
     # Create groups to hold enemy sprites and all sprites
@@ -64,21 +65,25 @@ def game():
     all_sprites.add(player)
     all_sprites.add(floor)
 
+    bgx = 0
+
+    obs = Sprite("Cosmic Dash Program V1/Cosmic Dash/images/avatar2.png",(0,0))
+    obs_x = 700
+    obs_spd = 5
 
     while running:
     
-        # Fill the screen with blue
-        screen.fill((0, 0, 20))
-        screen.blit(background.surf, background.rect)
+        screen.blit(background.surf, (bgx-800,0))
+        screen.blit(background.surf, (bgx,0))
+        screen.blit(background.surf, (bgx+800,0))
     
         # Running framerate
         clock.tick(60)
 
-    
+        bgx -= 2
+        if bgx <= -800:
+            bgx = 0
 
-        # Creates a rectangle for the floor the last var is 
-        # [indent from left, indent from top, width, height]
-        floor = pygame.draw.rect(screen,WHITE,[0,500,SCREEN_WIDTH,300])
     
         # Draw all sprites
         for entity in all_sprites:
@@ -110,7 +115,7 @@ def game():
             # When user presses the spacebar the avatar will jump
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and y_change == 0:
-                    y_change = 18
+                    y_change = 22
     
         # This checks the avatars current position 
         # And changes its position when needed
@@ -122,16 +127,11 @@ def game():
         if player.rect.bottom == 500 and y_change < 0:
             y_change = 0
             
+        screen.blit(obs.surf,(obs_x,423))
+        obs_x -= obs_spd
+        if obs_x < -100:
+            obs_x = 850
+            obs_spd = random.randint(5,10)
+
         # Update the display
         pygame.display.flip()
-
-
-
-
-
-
-
-   
-
-
-
