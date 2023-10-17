@@ -5,6 +5,9 @@ import random
 def game():
     pygame.init()
 
+    font=pygame.freetype.SysFont(None, 15)
+    font.origin=True
+
     # Import pygame.locals for easier access to key coordinates
     # Updated to conform to flake8 and black standards
     from pygame.locals import (
@@ -15,6 +18,15 @@ def game():
     SCREEN_WIDTH = 800
     SCREEN_HEIGHT = 600
     WHITE =  (255,255,255)
+
+    # Other variables to be defined
+    y_change = 0
+    x_change = 0
+    gravity = 1
+    bgx = 0
+    obs_x = 700
+    obs_spd = 5
+    spd_multi = 1
 
     # Create the screen object
     # The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
@@ -48,6 +60,24 @@ def game():
             self.surf = pygame.image.load(image).convert()
             self.surf.set_colorkey((255, 255, 255), RLEACCEL)
             self.rect = self.surf.get_rect(bottomleft= left)
+            self.move_left = False
+            self.move_right = False
+
+        def move(self):
+            x_change = 0
+            if not game_paused:
+                if self.move_left:
+                    x_change = -4
+                elif self.move_right:
+                    x_change = 4
+
+                if 0 <= player.rect.left and player.rect.right <= 800:
+                    player.rect.x += x_change
+                elif 0 >= player.rect.left:
+                    player.rect.x = 0
+                elif player.rect.right >= 800:
+                    player.rect.right = 800
+
 
     class Sprite(pygame.sprite.Sprite):
         def __init__(self,image,top_left):
@@ -55,21 +85,13 @@ def game():
             self.surf = pygame.image.load(image).convert()
             self.surf.set_colorkey((0,0,0), RLEACCEL)
             self.rect = self.surf.get_rect(topleft = top_left)
-        
+     
 
     # Intializing entities
-    player = Player("images/avatar.png",(50,500))
-    floor = Sprite("images/Template_Floor.jpg",(0,500))
-    background = Sprite("images/Cosmicbackground.jpg",(0,0))
-    y_change = 0
-    gravity = 1
-    bgx = 0
-    obs = Sprite("images/meteor.png",(0,0))
-    obs_x = 700
-    obs_spd = 5
-    life = 2
-    asteroid_sound = pygame.mixer.Sound("Sound Effects/asteroid.mp3")
-
+    player = Player("Cosmic Dash Program V1/Cosmic Dash/images/avatar.png",(50,500))
+    floor = Sprite("Cosmic Dash Program V1/Cosmic Dash/images/Template_Floor.jpg",(0,500))
+    background = Sprite("Cosmic Dash Program V1/Cosmic Dash/images/Cosmicbackground.jpg",(0,0))
+    obs = Sprite("Cosmic Dash Program V1/Cosmic Dash/images/avatar2.png",(0,0))
 
 
     # Create groups to hold enemy sprites and all sprites
@@ -82,6 +104,8 @@ def game():
 
     
 
+    SPEEDUPEVENT = pygame.USEREVENT + 1
+    pygame.time.set_timer(SPEEDUPEVENT, 6500)
     while running:
         
         # Scrolling background
@@ -92,66 +116,76 @@ def game():
         # Running framerate
         clock.tick(60)
 
+        # Timer
+        ticks=pygame.time.get_ticks()
+        millis=ticks%1000
+        seconds=int(ticks/1000 % 60)
+        minutes=int(ticks/60000 % 24)
+        out='{minutes:02d}:{seconds:02d}:{millis}'.format(
+            minutes=minutes, millis=millis, seconds=seconds)
+        font.render_to(screen, (10, 20), out,pygame.Color('white'))
+
+
         # Checks if background has scrolled to beggining
-        bgx -= 2
+        bgx -= (2*spd_multi)
         if bgx <= -800:
             bgx = 0
 
-    
         # Draw all sprites
         ply_rect = screen.blit(player.surf, player.rect)
         screen.blit(floor.surf, floor.rect)
 
         #check if game is paused
-        if game_paused :
-            screen.blit(menu_border,(-16,60))
-            if game_val == "main":
-                if resume_button.draw(screen):
-                    game_paused = False
-                if exit_button.draw(screen):
-                    running = False
-                if menu_button.draw(screen):
-                    import Cosmic_Dash
-                for event in pygame.event.get():
-                   if event.type == pygame.KEYDOWN:
-                       if event.key == pygame.K_ESCAPE:
-                           game_paused = False
-            
-
-        else:
-            
-            # Exits the game window when the user presses X
+        if game_paused == True:
+            if resume_button.draw(screen):
+                game_paused = False
+            if exit_button.draw(screen):
+                running = False
             for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        game_paused = True
-                if event.type == pygame.QUIT:
-                    running = False
+               if event.type == pygame.KEYDOWN:
+                   if event.key == pygame.K_ESCAPE:
+                       game_paused = False
+        else:
+            pass
+        
+        # Exits the game window when the user presses X
+        for event in pygame.event.get():
+
+            if event.type == SPEEDUPEVENT:
+                spd_multi += 0.5
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    game_paused = True
+            if event.type == pygame.QUIT:
+                running = False
             
                 # When user presses the spacebar the avatar will jump
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE and y_change == 0:
                         y_change = 24
     
-            # This checks the avatars current position 
-            # And changes its position when needed
-            if y_change > 0 or player.rect.bottom < 500:
-                player.rect.bottom -= y_change
-                y_change -= gravity
-            if player.rect.bottom > 500:
-                player.rect.bottom = 500
-            if player.rect.bottom == 500 and y_change < 0:
-                y_change = 0
-            
-            # Displays the obstacle sprite and 
-            # generates a new sprite each time it goes off screen with a new speed
-            obs_rect = screen.blit(obs.surf,(obs_x,423))
-            if obs_rect:
-                asteroid_sound.play()
-            obs_x -= obs_spd
-            if obs_x < -100:
-                obs_x = 850
-                obs_spd = random.randint(5,10)
+        # This checks the avatars current position 
+        # And changes its position when needed
+        if y_change > 0 or player.rect.bottom < 500:
+            player.rect.bottom -= y_change
+            y_change -= gravity
+        if player.rect.bottom > 500:
+            player.rect.bottom = 500
+        if player.rect.bottom == 500 and y_change < 0:
+            y_change = 0
+          
+        keys = pygame.key.get_pressed()
+        player.move_left  = keys[pygame.K_LEFT]  and not keys[pygame.K_RIGHT]
+        player.move_right = keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]
+        player.move()
+
+        # Displays the obstacle sprite and 
+        # generates a new sprite each time it goes off screen with a new speed
+        obs_rect = screen.blit(obs.surf,(obs_x,423))
+        obs_x -= obs_spd
+        if obs_x < -100:
+            obs_x = 850
+            obs_spd = (random.randint(5,10) * spd_multi)
 
             # Add Life Point system here (Currently ends game at collision)
             if ply_rect.colliderect(obs_rect):
