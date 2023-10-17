@@ -64,7 +64,7 @@ def game():
     y_change = 0
     gravity = 1
     bgx = 0
-    obs = Sprite("images/avatar2.png",(0,0))
+    obs = Sprite("images/meteor.png",(0,0))
     obs_x = 700
     obs_spd = 5
 
@@ -127,7 +127,7 @@ def game():
                 # When user presses the spacebar the avatar will jump
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE and y_change == 0:
-                        y_change = 22
+                        y_change = 24
     
             # This checks the avatars current position 
             # And changes its position when needed
