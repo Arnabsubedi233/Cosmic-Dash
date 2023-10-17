@@ -61,6 +61,7 @@ def home():
         clock.tick(60)
 
         if music:
+            main.set_volume(0.4)
             main.play()
         else:
             main.stop()

@@ -88,10 +88,10 @@ def game():
      
 
     # Intializing entities
-    player = Player("Cosmic Dash Program V1/Cosmic Dash/images/avatar.png",(50,500))
-    floor = Sprite("Cosmic Dash Program V1/Cosmic Dash/images/Template_Floor.jpg",(0,500))
-    background = Sprite("Cosmic Dash Program V1/Cosmic Dash/images/Cosmicbackground.jpg",(0,0))
-    obs = Sprite("Cosmic Dash Program V1/Cosmic Dash/images/avatar2.png",(0,0))
+    player = Player("avatar/tile001.png",(50,500))
+    floor = Sprite("images/Floor.jpg",(0,500))
+    background = Sprite("images/Cosmicbackground.jpg",(0,0))
+    obs = Sprite("images/meteor.png",(0,0))
 
 
     # Create groups to hold enemy sprites and all sprites
@@ -146,50 +146,53 @@ def game():
                    if event.key == pygame.K_ESCAPE:
                        game_paused = False
         else:
-            pass
         
-        # Exits the game window when the user presses X
-        for event in pygame.event.get():
+            # Exits the game window when the user presses X
+            for event in pygame.event.get():
 
-            if event.type == SPEEDUPEVENT:
-                spd_multi += 0.5
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    game_paused = True
-            if event.type == pygame.QUIT:
-                running = False
-            
-                # When user presses the spacebar the avatar will jump
+                if event.type == SPEEDUPEVENT:
+                    spd_multi += 0.5
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE and y_change == 0:
-                        y_change = 24
+                    if event.key == pygame.K_ESCAPE:
+                        game_paused = True
+                if event.type == pygame.QUIT:
+                    running = False
+            
+                    # When user presses the spacebar the avatar will jump
+                if event.type == pygame.KEYDOWN:
+                     if event.key == pygame.K_SPACE and y_change == 0:
+                            y_change = 24
     
-        # This checks the avatars current position 
-        # And changes its position when needed
-        if y_change > 0 or player.rect.bottom < 500:
-            player.rect.bottom -= y_change
-            y_change -= gravity
-        if player.rect.bottom > 500:
-            player.rect.bottom = 500
-        if player.rect.bottom == 500 and y_change < 0:
-            y_change = 0
+            # This checks the avatars current position 
+            # And changes its position when needed
+            if y_change > 0 or player.rect.bottom < 500:
+                player.rect.bottom -= y_change
+                y_change -= gravity
+            if player.rect.bottom > 500:
+                player.rect.bottom = 500
+            if player.rect.bottom == 500 and y_change < 0:
+                y_change = 0
           
-        keys = pygame.key.get_pressed()
-        player.move_left  = keys[pygame.K_LEFT]  and not keys[pygame.K_RIGHT]
-        player.move_right = keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]
-        player.move()
+            keys = pygame.key.get_pressed()
+            player.move_left  = keys[pygame.K_LEFT]  and not keys[pygame.K_RIGHT]
+            player.move_right = keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]
+            player.move()
 
-        # Displays the obstacle sprite and 
-        # generates a new sprite each time it goes off screen with a new speed
-        obs_rect = screen.blit(obs.surf,(obs_x,423))
-        obs_x -= obs_spd
-        if obs_x < -100:
-            obs_x = 850
-            obs_spd = (random.randint(5,10) * spd_multi)
+            # Displays the obstacle sprite and 
+            # generates a new sprite each time it goes off screen with a new speed
+            obs_rect = screen.blit(obs.surf,(obs_x,423))
+            obs_x -= obs_spd
+            if obs_x < -100:
+                obs_x = 850
+                obs_spd = (random.randint(5,10) * spd_multi)
 
-            # Add Life Point system here (Currently ends game at collision)
+                # Add Life Point system here (Currently ends game at collision)
             if ply_rect.colliderect(obs_rect):
-                return
+                 import Cosmic_Dash 
+                 break
+                
+               
+             
 
 
 
