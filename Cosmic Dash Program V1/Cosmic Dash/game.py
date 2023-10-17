@@ -53,26 +53,27 @@ def game():
             self.rect = self.surf.get_rect(topleft = top_left)
         
 
-
+    # Intializing entities
     player = Player("Cosmic Dash Program V1/Cosmic Dash/images/avatar.png",(50,500))
     floor = Sprite("Cosmic Dash Program V1/Cosmic Dash/images/Template_Floor.jpg",(0,500))
     background = Sprite("Cosmic Dash Program V1/Cosmic Dash/images/Cosmicbackground.jpg",(0,0))
     y_change = 0
     gravity = 1
-    # Create groups to hold enemy sprites and all sprites
-    # - all_sprites is used for rendering
-    all_sprites = pygame.sprite.Group()
-    all_sprites.add(player)
-    all_sprites.add(floor)
-
     bgx = 0
-
     obs = Sprite("Cosmic Dash Program V1/Cosmic Dash/images/avatar2.png",(0,0))
     obs_x = 700
     obs_spd = 5
 
+    # Create groups to hold enemy sprites and all sprites
+    # - all_sprites is used for rendering
+    # NOT NEEDED RIGHT NOW
+    all_sprites = pygame.sprite.Group()
+    all_sprites.add(player)
+    all_sprites.add(floor)
+
     while running:
-    
+        
+        # Scrolling background
         screen.blit(background.surf, (bgx-800,0))
         screen.blit(background.surf, (bgx,0))
         screen.blit(background.surf, (bgx+800,0))
@@ -80,14 +81,15 @@ def game():
         # Running framerate
         clock.tick(60)
 
+        # Checks if background has scrolled to beggining
         bgx -= 2
         if bgx <= -800:
             bgx = 0
 
     
         # Draw all sprites
-        for entity in all_sprites:
-            screen.blit(entity.surf, entity.rect)
+        ply_rect = screen.blit(player.surf, player.rect)
+        screen.blit(floor.surf, floor.rect)
 
         #check if game is paused
         if game_paused == True:
@@ -127,11 +129,17 @@ def game():
         if player.rect.bottom == 500 and y_change < 0:
             y_change = 0
             
-        screen.blit(obs.surf,(obs_x,423))
+        # Displays the obstacle sprite and 
+        # generates a new sprite each time it goes off screen with a new speed
+        obs_rect = screen.blit(obs.surf,(obs_x,423))
         obs_x -= obs_spd
         if obs_x < -100:
             obs_x = 850
             obs_spd = random.randint(5,10)
+
+        # Add Life Point system here (Currently ends game at collision)
+        if ply_rect.colliderect(obs_rect):
+            return
 
         # Update the display
         pygame.display.flip()
