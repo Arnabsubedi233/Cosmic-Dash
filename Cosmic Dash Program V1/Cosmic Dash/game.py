@@ -23,14 +23,32 @@ def game():
     running = True
     #game paused variable
     game_paused = False
+    game_val = "main"
 
     #load button images
     resume_img = pygame.image.load("images/button_resume.png")
     exit_img = pygame.image.load("images/button_quit.png")
-
+    settings_img = pygame.image.load("images/settingsbutton.png")
+    
     #button instance
     resume_button = buttons.Button(250,125,resume_img,0.5)
-    exit_button = buttons.Button(250,250,exit_img,0.5)
+    exit_button = buttons.Button(250,375,exit_img,0.5)
+    settings_button = buttons.Button(250,250,settings_img,0.5)
+
+    #second menu buttons
+
+    aud_img = pygame.image.load("images/Audio Square Button.png")
+    aud_button = buttons.Button(280,125,aud_img,0.5)
+    music_img = pygame.image.load("images/Music Square Button.png")
+    music_button = buttons.Button(280,250,music_img,0.5)
+    info_img = pygame.image.load("images/Info Square Button.png")
+    info_button = buttons.Button(430,125,info_img,0.5)
+    back_img = pygame.image.load("images/Back Square Button.png")
+    back_button = buttons.Button(430,250,back_img,0.5)
+    home_img = pygame.image.load("images/Home Square Button.png")
+    home_button = buttons.Button(345,380,home_img,0.5)
+
+    
 
     # Setup the clock for a decent framerate
     clock = pygame.time.Clock()
@@ -63,6 +81,7 @@ def game():
     all_sprites = pygame.sprite.Group()
     all_sprites.add(player)
     all_sprites.add(floor)
+    menu_border = pygame.image.load("images/menuborder.png")
 
 
     while running:
@@ -86,14 +105,30 @@ def game():
 
         #check if game is paused
         if game_paused == True:
-            if resume_button.draw(screen):
-                game_paused = False
-            if exit_button.draw(screen):
-                running = False
-            for event in pygame.event.get():
-               if event.type == pygame.KEYDOWN:
-                   if event.key == pygame.K_ESCAPE:
-                       game_paused = False
+            screen.blit(menu_border,(-16,60))
+            if game_val == "main":
+                if resume_button.draw(screen):
+                    game_paused = False
+                if exit_button.draw(screen):
+                    running = False
+                if settings_button.draw(screen):
+                    game_val = "side"
+                for event in pygame.event.get():
+                   if event.type == pygame.KEYDOWN:
+                       if event.key == pygame.K_ESCAPE:
+                           game_paused = False
+            elif game_val == "side":
+                if aud_button.draw(screen):
+                    pass
+                if music_button.draw(screen):
+                    pass
+                if back_button.draw(screen):
+                    game_val = "main"
+                if home_button.draw(screen):
+                    game_val = "main"
+                if info_button.draw(screen):
+                    pass
+
         else:
             pass
 
