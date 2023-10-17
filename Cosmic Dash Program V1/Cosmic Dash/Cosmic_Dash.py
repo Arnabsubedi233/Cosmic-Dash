@@ -26,19 +26,19 @@ exit_img = pygame.image.load("Cosmic Dash Program V1/Cosmic Dash/images/buttonqu
 exit_button = buttons.Button(250,375,exit_img,0.5)
 
 #Setting page buttons
-aud_img = pygame.image.load("images/Audio Square Button.png")
+aud_img = pygame.image.load("Cosmic Dash Program V1/Cosmic Dash/images/Audio Square Button.png")
 aud_button = buttons.Button(280,125,aud_img,0.5)
-music_img = pygame.image.load("images/Music Square Button.png")
+music_img = pygame.image.load("Cosmic Dash Program V1/Cosmic Dash/images/Music Square Button.png")
 music_button = buttons.Button(280,250,music_img,0.5)
-info_img = pygame.image.load("images/Info Square Button.png")
+info_img = pygame.image.load("Cosmic Dash Program V1/Cosmic Dash/images/Info Square Button.png")
 info_button = buttons.Button(430,125,info_img,0.5)
-back_img = pygame.image.load("images/Back Square Button.png")
+back_img = pygame.image.load("Cosmic Dash Program V1/Cosmic Dash/images/Back Square Button.png")
 back_button = buttons.Button(430,250,back_img,0.5)
-home_img = pygame.image.load("images/Home Square Button.png")
+home_img = pygame.image.load("Cosmic Dash Program V1/Cosmic Dash/images/Home Square Button.png")
 home_button = buttons.Button(345,380,home_img,0.5)
 
-background = pygame.image.load("images/menu.jpg")
-menu_border = pygame.image.load("images/menuborder.png")
+background = pygame.image.load("Cosmic Dash Program V1/Cosmic Dash/images/menu.jpg")
+menu_border = pygame.image.load("Cosmic Dash Program V1/Cosmic Dash/images/menuborder.png")
 
 game_val = "main"
 # Create the screen object
