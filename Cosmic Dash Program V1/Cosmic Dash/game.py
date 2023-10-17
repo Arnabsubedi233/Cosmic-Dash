@@ -24,14 +24,18 @@ def game():
     running = True
     #game paused variable
     game_paused = False
-
-    #load button images
-    resume_img = pygame.image.load("Cosmic Dash Program V1/Cosmic Dash/images/buttonresume.png")
-    exit_img = pygame.image.load("Cosmic Dash Program V1/Cosmic Dash/images/buttonquit.png")
-
-    #button instance
+    game_val = "main"
+    
+    #load button images and button instances
+    resume_img = pygame.image.load("images/buttonresume.png")
+    exit_img = pygame.image.load("images/buttonquit.png")
+    menu_img = pygame.image.load("images/Menu Button.png")
     resume_button = buttons.Button(250,125,resume_img,0.5)
-    exit_button = buttons.Button(250,250,exit_img,0.5)
+    exit_button = buttons.Button(250,375,exit_img,0.5)
+    menu_button = buttons.Button(250,250,menu_img,0.5)
+    
+    #settings page buttons
+    
 
     # Setup the clock for a decent framerate
     clock = pygame.time.Clock()
@@ -54,13 +58,13 @@ def game():
         
 
     # Intializing entities
-    player = Player("Cosmic Dash Program V1/Cosmic Dash/images/avatar.png",(50,500))
-    floor = Sprite("Cosmic Dash Program V1/Cosmic Dash/images/Template_Floor.jpg",(0,500))
-    background = Sprite("Cosmic Dash Program V1/Cosmic Dash/images/Cosmicbackground.jpg",(0,0))
+    player = Player("images/avatar.png",(50,500))
+    floor = Sprite("images/Template_Floor.jpg",(0,500))
+    background = Sprite("images/Cosmicbackground.jpg",(0,0))
     y_change = 0
     gravity = 1
     bgx = 0
-    obs = Sprite("Cosmic Dash Program V1/Cosmic Dash/images/avatar2.png",(0,0))
+    obs = Sprite("images/avatar2.png",(0,0))
     obs_x = 700
     obs_spd = 5
 
@@ -70,6 +74,9 @@ def game():
     all_sprites = pygame.sprite.Group()
     all_sprites.add(player)
     all_sprites.add(floor)
+    menu_border = pygame.image.load("images/menuborder.png")
+
+    
 
     while running:
         
@@ -92,54 +99,61 @@ def game():
         screen.blit(floor.surf, floor.rect)
 
         #check if game is paused
-        if game_paused == True:
-            if resume_button.draw(screen):
-                game_paused = False
-            if exit_button.draw(screen):
-                running = False
-            for event in pygame.event.get():
-               if event.type == pygame.KEYDOWN:
-                   if event.key == pygame.K_ESCAPE:
-                       game_paused = False
+        if game_paused :
+            screen.blit(menu_border,(-16,60))
+            if game_val == "main":
+                if resume_button.draw(screen):
+                    game_paused = False
+                if exit_button.draw(screen):
+                    running = False
+                if menu_button.draw(screen):
+                    import Cosmic_Dash
+                for event in pygame.event.get():
+                   if event.type == pygame.KEYDOWN:
+                       if event.key == pygame.K_ESCAPE:
+                           game_paused = False
+            
+
         else:
-            pass
+            
+            # Exits the game window when the user presses X
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        game_paused = True
+                if event.type == pygame.QUIT:
+                    running = False
+            
+                # When user presses the spacebar the avatar will jump
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE and y_change == 0:
+                        y_change = 22
+    
+            # This checks the avatars current position 
+            # And changes its position when needed
+            if y_change > 0 or player.rect.bottom < 500:
+                player.rect.bottom -= y_change
+                y_change -= gravity
+            if player.rect.bottom > 500:
+                player.rect.bottom = 500
+            if player.rect.bottom == 500 and y_change < 0:
+                y_change = 0
+            
+            # Displays the obstacle sprite and 
+            # generates a new sprite each time it goes off screen with a new speed
+            obs_rect = screen.blit(obs.surf,(obs_x,423))
+            obs_x -= obs_spd
+            if obs_x < -100:
+                obs_x = 850
+                obs_spd = random.randint(5,10)
+
+            # Add Life Point system here (Currently ends game at collision)
+            if ply_rect.colliderect(obs_rect):
+                return
+
 
 
         
-        # Exits the game window when the user presses X
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    game_paused = True
-            if event.type == pygame.QUIT:
-                running = False
-            
-            # When user presses the spacebar the avatar will jump
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE and y_change == 0:
-                    y_change = 22
-    
-        # This checks the avatars current position 
-        # And changes its position when needed
-        if y_change > 0 or player.rect.bottom < 500:
-            player.rect.bottom -= y_change
-            y_change -= gravity
-        if player.rect.bottom > 500:
-            player.rect.bottom = 500
-        if player.rect.bottom == 500 and y_change < 0:
-            y_change = 0
-            
-        # Displays the obstacle sprite and 
-        # generates a new sprite each time it goes off screen with a new speed
-        obs_rect = screen.blit(obs.surf,(obs_x,423))
-        obs_x -= obs_spd
-        if obs_x < -100:
-            obs_x = 850
-            obs_spd = random.randint(5,10)
-
-        # Add Life Point system here (Currently ends game at collision)
-        if ply_rect.colliderect(obs_rect):
-            return
-
+        
         # Update the display
         pygame.display.flip()
