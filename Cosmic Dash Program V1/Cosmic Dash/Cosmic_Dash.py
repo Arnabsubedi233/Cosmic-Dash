@@ -69,7 +69,7 @@ def home():
         if game_val == "main":
             if play_button.draw(screen):
                 game.game()
-                run = False
+    
             if settings_img.draw(screen):
                 game_val = "side"
             if exit_button.draw(screen):

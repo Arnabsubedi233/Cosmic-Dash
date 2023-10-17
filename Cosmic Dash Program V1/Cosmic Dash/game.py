@@ -39,11 +39,8 @@ def game():
     # Variable to keep the main loop running
     running = True
     #States
-    Main_menu = True
-    settings = False
-    Game_over = False
     game_paused = False
-    Game = False
+
 
    
 
@@ -119,6 +116,10 @@ def game():
     life = 0 
 
     
+    #audios
+    asteriod_sfx = pygame.mixer.Sound("Sound Effects/asteroid.wav")
+    
+    
 
     SPEEDUPEVENT = pygame.USEREVENT + 1
     pygame.time.set_timer(SPEEDUPEVENT, 6500)
@@ -162,6 +163,8 @@ def game():
                 game_paused = False
             if exit_button.draw(screen):
                 running = False
+            if menu_button.draw(screen):
+                return
             for event in pygame.event.get():
                if event.type == pygame.KEYDOWN:
                    if event.key == pygame.K_ESCAPE:
@@ -202,6 +205,7 @@ def game():
             # Displays the obstacle sprite and 
             # generates a new sprite each time it goes off screen with a new speed
             obs_rect = screen.blit(obs.surf,(obs_x,423))
+            asteriod_sfx.play()
             obs_x -= obs_spd
             if obs_x < -100:
                 obs_x = 850
@@ -210,14 +214,9 @@ def game():
                 # Add Life Point system here (Currently ends game at collision)
             if ply_rect.colliderect(obs_rect):
                 return
-
-                
                
-             
-
-
-
-        
+      
+                
         
         # Update the display
         pygame.display.flip()
