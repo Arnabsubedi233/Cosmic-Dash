@@ -67,6 +67,10 @@ def game():
     obs = Sprite("images/meteor.png",(0,0))
     obs_x = 700
     obs_spd = 5
+    life = 2
+    asteroid_sound = pygame.mixer.Sound("Sound Effects/asteroid.mp3")
+
+
 
     # Create groups to hold enemy sprites and all sprites
     # - all_sprites is used for rendering
@@ -142,6 +146,8 @@ def game():
             # Displays the obstacle sprite and 
             # generates a new sprite each time it goes off screen with a new speed
             obs_rect = screen.blit(obs.surf,(obs_x,423))
+            if obs_rect:
+                asteroid_sound.play()
             obs_x -= obs_spd
             if obs_x < -100:
                 obs_x = 850

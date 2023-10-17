@@ -50,7 +50,9 @@ def home():
     #clock for better frames
     clock = pygame.time.Clock()
     white=(255,255,255)
+    main = pygame.mixer.Sound("Sound Effects/mainmenu.mp3")
     #main loop
+    music = True
     while run == True:
         #fills screen colour
         screen.fill((0, 0, 20))
@@ -58,6 +60,10 @@ def home():
         screen.blit(menu_border,(-16,60))
         clock.tick(60)
 
+        if music:
+            main.play()
+        else:
+            main.stop()
         #selection for if button press = true then executes command
         if game_val == "main":
             if play_button.draw(screen):
@@ -71,7 +77,7 @@ def home():
             if aud_button.draw(screen):
                 pass
             if music_button.draw(screen):
-                pass
+                music = not music
             if back_button.draw(screen):
                 game_val = "main"
             if home_button.draw(screen):
