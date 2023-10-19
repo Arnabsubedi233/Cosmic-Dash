@@ -35,6 +35,9 @@ def game():
     spd_multi = 1
     fps = 60
     fps_count = 0
+    points = 0
+    scrap_x = random.randint(0,600)
+    scrap_y = random.randint(200,400)
 
     # Create the screen object
     # The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
@@ -139,6 +142,7 @@ def game():
     obs = Sprite("images/meteor.png",(0,0))
     heart1 = Sprite('images/heart.png',(10,25))
     heart2 = Sprite('images/heart.png',(30,25))
+    scrap = Sprite('images/scrap.png',(10,25))
 
     # Create groups to hold enemy sprites and all sprites
     # - all_sprites is used for rendering
@@ -155,6 +159,8 @@ def game():
     pygame.time.set_timer(SPEEDUPEVENT, 6500)
     COLLIDEEVENT = pygame.USEREVENT + 2
     Collide_event = pygame.event.Event(COLLIDEEVENT)
+    WINEVENT = pygame.USEREVENT + 3
+    Win_event = pygame.event.Event(WINEVENT)
 
 
     while running:
@@ -240,15 +246,18 @@ def game():
                     obs_x = 850
                     time.sleep(0.5)
                     spd_multi = 1
-                    total_seconds = 0
-                    fps_count = 0
-                    pygame.transform.scale(player.surf,(player.rect.height//2,player.rect.width))
+                    player.surf = pygame.transform.scale(player.surf,(player.rect.height//2,player.rect.width))
                     
+                # Add win screen here
+                if event.type == WINEVENT:
+                    game_paused = True
+                
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         game_paused = True
                         total_seconds = 0
                         fps_count = 0
+                        
                 if event.type == pygame.QUIT:
                     running = False
             
@@ -277,7 +286,7 @@ def game():
                 player.right(0.2)
             player.move()
             
-
+            
             # Displays the obstacle sprite and 
             # generates a new sprite each time it goes off screen with a new speed
             obs_rect = screen.blit(obs.surf,(obs_x,423))
@@ -285,16 +294,28 @@ def game():
             obs_x -= obs_spd
             if obs_x < -100:
                 obs_x = 850
-                obs_spd = (random.randint(5,10) * spd_multi)
+                obs_spd = (random.randint(3,8) * spd_multi)
 
                 # Add Life Point system here (Currently ends game at collision)
             if ply_rect.colliderect(obs_rect):
                 pygame.event.post(Collide_event)
                 
+            scrap2 = pygame.transform.scale(scrap.surf, (int(scrap.rect.height), int(scrap.rect.width)))
+            
+            scrap_rect = screen.blit(scrap2,(scrap_x,scrap_y))
+            scrap_x -= obs_spd
+              
+            if scrap_x < -100:
+                scrap_x = 850
+                scrap_y = random.randint(200,400)
+
+            if ply_rect.colliderect(scrap_rect):
+                scrap_x = 850
+                scrap_y = random.randint(200,400)
+                points += 1
                 
-                
-                
-               
+        if points > 15:
+            pygame.event.post(Win_event)
       
                 
         
