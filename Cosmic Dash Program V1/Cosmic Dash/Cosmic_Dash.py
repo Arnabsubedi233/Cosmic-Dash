@@ -39,6 +39,7 @@ def home():
     home_button = buttons.Button(345,380,home_img,0.5)
 
     background = pygame.image.load("images/menu.jpg")
+
     menu_border = pygame.image.load("images/menuborder.png")
 
     game_val = "main"
@@ -117,7 +118,7 @@ def home():
         #fills screen colour
         screen.fill((0, 0, 20))
         screen.blit(background,(0,0))
-        screen.blit(menu_border,(-16,60))
+        #screen.blit(menu_border,(-16,60))
         clock.tick(60)
 
         if music:

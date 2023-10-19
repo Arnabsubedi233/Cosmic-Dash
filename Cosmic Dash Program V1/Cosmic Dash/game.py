@@ -226,7 +226,6 @@ def game():
             
         #check if game is paused
         if game_paused == True:
-            screen.blit(menu_border,(-16,60))
             if resume_button.draw(screen):
                 game_paused = False
             if exit_button.draw(screen):
