@@ -185,7 +185,7 @@ def game():
                     # When user presses the spacebar the avatar will jump
                 if event.type == pygame.KEYDOWN:
                      if event.key == pygame.K_SPACE and y_change == 0:
-                            y_change = 24
+                            y_change = 16
     
             # This checks the avatars current position 
             # And changes its position when needed
