@@ -2,6 +2,7 @@ import pygame
 import buttons
 import game
 
+
 def home():
     pygame.init()
 
