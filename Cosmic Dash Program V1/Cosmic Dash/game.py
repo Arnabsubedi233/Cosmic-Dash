@@ -117,7 +117,16 @@ def game():
 
             self.surf = run_right[int(self.current_sprite_r)]
 
-
+    def gameover():
+        screen.fill((0,0,0))
+        pygame.font.init() # you have to call this at the start, 
+                   # if you want to use this module.
+        my_font = pygame.font.SysFont('Comic Sans MS', 30)
+        text_surface = my_font.render('GAME OVER', False, (0, 0, 0))
+        screen.blit(text_surface, (0,0))
+        
+        
+        
 
     class Sprite(pygame.sprite.Sprite):
         def __init__(self,image,top_left):
@@ -228,7 +237,7 @@ def game():
             for event in pygame.event.get():
 
                 if event.type == SPEEDUPEVENT:
-                    spd_multi += 0.5
+                    spd_multi += 0.1
                     
                 if event.type == COLLIDEEVENT:
                     if heart2.rect.x < 10000:
@@ -285,11 +294,16 @@ def game():
             obs_x -= obs_spd
             if obs_x < -100:
                 obs_x = 850
-                obs_spd = (random.randint(5,10) * spd_multi)
+                obs_spd = (random.randint(4,9) * spd_multi)
 
                 # Add Life Point system here (Currently ends game at collision)
             if ply_rect.colliderect(obs_rect):
                 pygame.event.post(Collide_event)
+               
+
+
+            
+                
                 
                 
                 

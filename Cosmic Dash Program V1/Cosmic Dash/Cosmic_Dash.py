@@ -46,13 +46,72 @@ def home():
     # The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
+    def gameover():
+        pygame.init()
+        game_over = pygame.image.load("images/gameover.png")
+
+         # Import pygame.locals for easier access to key coordinates
+         # Updated to conform to flake8 and black standards
+        from pygame.locals import (
+                RLEACCEL
+            )
+         # Define constants for the screen width and height
+        SCREEN_WIDTH = 800
+        SCREEN_HEIGHT = 600
+        WHITE =  (255,255,255)
+        clock = pygame.time.Clock()
+        screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        run = True
+        pygame.font.init() # you have to call this at the start, 
+                    # if you want to use this module.
+        my_font = pygame.font.SysFont('Comic Sans MS', 30)
+        text_surface2 = my_font.render('press space to restart', False, (WHITE))
+        while run == True:
+            clock.tick(60)
+            screen.fill((0,0,0))
+            screen.blit(game_over,(200,200))
+            screen.blit(text_surface2,(250,400))
+
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        run = False
+            pygame.display.flip()
+
+    def info():
+   
+        pygame.font.init() # you have to call this at the start,
+                   # if you want to use this module.
+        my_font = pygame.font.SysFont('Impact', 25,)
+        screen.fill(white)  
+        screen.blit(background,(0,0))
+        screen.blit(menu_border,(-16,60))
+        text_surface1 = my_font.render('Controls', False, (0, 0, 0))
+        screen.blit(text_surface1,(350,150))
+        text_surface2 = my_font.render('Space = Jump', False, (0, 0, 0))
+        screen.blit(text_surface2,(230,200))
+        text_surface3 = my_font.render('A/Left Arrow = move left', False, (0, 0, 0))
+        screen.blit(text_surface3,(230,275))
+        text_surface4 = my_font.render('D/Right arrow = move right', False, (0, 0, 0))
+        screen.blit(text_surface4,(230,350))
+        text_surface5 = my_font.render('Escape = Pause', False, (0, 0, 0))
+        screen.blit(text_surface5,(230,450))
+        
+
+        
+
+        
+    pygame.mixer.pre_init(frequency=44100,size=-16,channels=10,buffer=4096)    
     #flag for mainloop
     run = True
     #clock for better frames
     clock = pygame.time.Clock()
     white=(255,255,255)
     main = pygame.mixer.Sound("Sound Effects/mainmenu.mp3")
+    game_over = pygame.mixer.Sound("Sound Effects/game over.mp3")
     #main loop
+    game_restart = False
+
     music = True
     while run == True:
         #fills screen colour
@@ -70,7 +129,9 @@ def home():
         if game_val == "main":
             if play_button.draw(screen):
                 game.game()
-    
+                main.stop()
+                game_over.play()
+                gameover()
             if settings_img.draw(screen):
                 game_val = "side"
             if exit_button.draw(screen):
@@ -85,7 +146,7 @@ def home():
             if home_button.draw(screen):
                 game_val = "main"
             if info_button.draw(screen):
-                pass
+                info()
 
 
         
