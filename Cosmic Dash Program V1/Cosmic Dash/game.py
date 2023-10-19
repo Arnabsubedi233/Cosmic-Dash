@@ -2,6 +2,7 @@ import pygame
 from pygame.time import delay
 import buttons
 import random
+import time
 
 
 
@@ -32,6 +33,8 @@ def game():
     obs_x = 700
     obs_spd = 5
     spd_multi = 1
+    fps = 60
+    fps_count = 0
 
     # Create the screen object
     # The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
@@ -123,23 +126,25 @@ def game():
             self.surf.set_colorkey((0,0,0), RLEACCEL)
             self.rect = self.surf.get_rect(topleft = top_left)
      
+    def inverted(img):
+       inv = pygame.Surface(img.get_rect().size, pygame.SRCALPHA)
+       inv.fill((255,255,255,255))
+       inv.blit(img, (0,0), None, pygame.BLEND_RGB_SUB)
+       return inv
 
     # Intializing entities
     player = Player("avatar/tile001.png",(50,500))
     floor = Sprite("images/Floor.jpg",(0,500))
     background = Sprite("images/Cosmicbackground.jpg",(0,0))
     obs = Sprite("images/meteor.png",(0,0))
-
+    heart1 = Sprite('images/heart.png',(10,25))
+    heart2 = Sprite('images/heart.png',(30,25))
 
     # Create groups to hold enemy sprites and all sprites
     # - all_sprites is used for rendering
     # NOT NEEDED RIGHT NOW
-    all_sprites = pygame.sprite.Group()
-    all_sprites.add(player)
-    all_sprites.add(floor)
-    menu_border = pygame.image.load("images/menuborder.png")
-    life = 0 
 
+    menu_border = pygame.image.load("images/menuborder.png")
     
     #audios
     asteriod_sfx = pygame.mixer.Sound("Sound Effects/asteroid.wav")
@@ -148,6 +153,8 @@ def game():
 
     SPEEDUPEVENT = pygame.USEREVENT + 1
     pygame.time.set_timer(SPEEDUPEVENT, 6500)
+    COLLIDEEVENT = pygame.USEREVENT + 2
+    Collide_event = pygame.event.Event(COLLIDEEVENT)
 
 
     while running:
@@ -163,18 +170,29 @@ def game():
     
         # Running framerate
         clock.tick(60)
-
+        
         # Timer
         ticks=pygame.time.get_ticks()
         millis=ticks%1000
-        seconds=int(ticks/1000 % 60)
-        minutes=int(ticks/60000 % 24)
-        out='{minutes:02d}:{seconds:02d}:{millis}'.format(
-            minutes=minutes, millis=millis, seconds=seconds)
+        # seconds=int(ticks/1000 % 60)
+        # minutes=int(ticks/60000 % 24)
+        # out='{minutes:02d}:{seconds:02d}:{millis}'.format(
+        #     minutes=minutes, millis=millis, seconds=seconds)
+        # font.render_to(screen, (10, 20), out,pygame.Color('white'))
+
+        
+        total_seconds = fps_count // fps
+        minutes = total_seconds // 60
+        seconds = total_seconds % 60
+        out='{minutes:02d}:{seconds:02d}:{millis:02d}'.format(
+             minutes=minutes,millis=millis, seconds=seconds)
         font.render_to(screen, (10, 20), out,pygame.Color('white'))
-
+        fps_count += 1
+        
      
-
+        # Life Points
+        screen.blit(heart1.surf,heart1.rect)
+        screen.blit(heart2.surf,heart2.rect)
 
         # Checks if background has scrolled to beggining
         bgx -= (2*spd_multi)
@@ -187,6 +205,10 @@ def game():
             player.right(0.1)
         
 
+        # Ends game when health falls to 0
+        if heart2.rect.x > 10000 and heart1.rect.x > 10000:
+            running = False
+            
         #check if game is paused
         if game_paused == True:
             screen.blit(menu_border,(-16,60))
@@ -207,9 +229,26 @@ def game():
 
                 if event.type == SPEEDUPEVENT:
                     spd_multi += 0.5
+                    
+                if event.type == COLLIDEEVENT:
+                    if heart2.rect.x < 10000:
+                        heart2.rect.x = 90000
+                    else:
+                        heart1.rect.x = 90000
+                        
+                    player.rect.x = 50
+                    obs_x = 850
+                    time.sleep(0.5)
+                    spd_multi = 1
+                    total_seconds = 0
+                    fps_count = 0
+                    pygame.transform.scale(player.surf,(player.rect.height//2,player.rect.width))
+                    
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         game_paused = True
+                        total_seconds = 0
+                        fps_count = 0
                 if event.type == pygame.QUIT:
                     running = False
             
@@ -250,7 +289,11 @@ def game():
 
                 # Add Life Point system here (Currently ends game at collision)
             if ply_rect.colliderect(obs_rect):
-                return
+                pygame.event.post(Collide_event)
+                
+                
+                
+                
                
       
                 
