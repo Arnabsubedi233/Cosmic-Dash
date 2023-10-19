@@ -1,4 +1,5 @@
 import pygame
+from pygame.time import delay
 import buttons
 import random
 
@@ -58,7 +59,10 @@ def game():
     exit_button = buttons.Button(250,375,exit_img,0.5)
     menu_button = buttons.Button(250,250,menu_img,0.5)
     
-    #settings page buttons
+    #animations variables
+    run_right = [pygame.image.load("avatar/tile008.png"),pygame.image.load("avatar/tile009.png"),pygame.image.load("avatar/tile010.png"),pygame.image.load("avatar/tile011.png")]
+    run_left = [pygame.image.load("avatar/tile012.png"),pygame.image.load("avatar/tile013.png"),pygame.image.load("avatar/tile014.png"),pygame.image.load("avatar/tile014.png")]
+  
     
 
     # Setup the clock for a decent framerate
@@ -74,6 +78,8 @@ def game():
             self.rect = self.surf.get_rect(bottomleft= left)
             self.move_left = False
             self.move_right = False
+            self.current_sprite_l = 0
+            self.current_sprite_r = 0
 
         def move(self):
             x_change = 0
@@ -82,6 +88,8 @@ def game():
                     x_change = -4
                 elif self.move_right:
                     x_change = 4
+                    
+           
 
                 if 0 <= player.rect.left and player.rect.right <= 800:
                     player.rect.x += x_change
@@ -89,6 +97,23 @@ def game():
                     player.rect.x = 0
                 elif player.rect.right >= 800:
                     player.rect.right = 800
+
+        def left(self):
+            self.current_sprite_l+=0.2
+
+            if self.current_sprite_l >= len(run_left):
+                self.current_sprite_l = 0
+
+            self.surf = run_left[int(self.current_sprite_l)]
+
+        def right(self,val):
+            self.current_sprite_r+=val
+
+            if self.current_sprite_r >= len(run_right):
+                self.current_sprite_r = 0
+
+            self.surf = run_right[int(self.current_sprite_r)]
+
 
 
     class Sprite(pygame.sprite.Sprite):
@@ -131,6 +156,10 @@ def game():
         screen.blit(background.surf, (bgx-800,0))
         screen.blit(background.surf, (bgx,0))
         screen.blit(background.surf, (bgx+800,0))
+
+        screen.blit(floor.surf, (bgx-800,500))
+        screen.blit(floor.surf,(bgx,500))
+        screen.blit(floor.surf, (bgx+800,500))
     
         # Running framerate
         clock.tick(60)
@@ -154,7 +183,9 @@ def game():
 
         # Draw all sprites
         ply_rect = screen.blit(player.surf, player.rect)
-        screen.blit(floor.surf, floor.rect)
+        if ply_rect:
+            player.right(0.1)
+        
 
         #check if game is paused
         if game_paused == True:
@@ -185,7 +216,7 @@ def game():
                     # When user presses the spacebar the avatar will jump
                 if event.type == pygame.KEYDOWN:
                      if event.key == pygame.K_SPACE and y_change == 0:
-                            y_change = 16
+                            y_change = 19
     
             # This checks the avatars current position 
             # And changes its position when needed
@@ -196,11 +227,17 @@ def game():
                 player.rect.bottom = 500
             if player.rect.bottom == 500 and y_change < 0:
                 y_change = 0
-          
+            
             keys = pygame.key.get_pressed()
             player.move_left  = keys[pygame.K_LEFT]  and not keys[pygame.K_RIGHT]
+            if player.move_left:
+                player.left()
+
             player.move_right = keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]
+            if player.move_right:
+                player.right(0.2)
             player.move()
+            
 
             # Displays the obstacle sprite and 
             # generates a new sprite each time it goes off screen with a new speed
