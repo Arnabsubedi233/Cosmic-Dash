@@ -47,6 +47,43 @@ def home():
     # The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
+    def win():
+        pygame.init()
+        victory = pygame.image.load("images/victory.png")
+        vic_background = pygame.image.load("images/victory_background.jpg")
+
+         # Import pygame.locals for easier access to key coordinates
+         # Updated to conform to flake8 and black standards
+        from pygame.locals import (
+                RLEACCEL
+            )
+         # Define constants for the screen width and height
+        SCREEN_WIDTH = 800
+        SCREEN_HEIGHT = 600
+        WHITE =  (255,255,255)
+        clock = pygame.time.Clock()
+        screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        run = True
+        pygame.font.init() # you have to call this at the start, 
+                    # if you want to use this module.
+        my_font = pygame.font.SysFont('Comic Sans MS', 30)
+        text_surface2 = my_font.render('press space to restart', False, (WHITE))
+        while run == True:
+            clock.tick(60)
+            screen.fill((0,0,0))
+            screen.blit(vic_background,(0,0))
+            screen.blit(victory,(0,0))
+            screen.blit(text_surface2,(200,200))
+
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        run = False
+                if event.type == pygame.QUIT:
+                    quit()
+            pygame.display.flip()
+
+
     def gameover():
         pygame.init()
         game_over = pygame.image.load("images/gameover.png")
@@ -133,10 +170,15 @@ def home():
         #selection for if button press = true then executes command
         if game_val == "main":
             if play_button.draw(screen):
-                game.game()
+                val2 = game.game()
                 main.stop()
-                game_over.play()
-                gameover()
+                print(val2)
+                if val2 == None:
+                    game_over.play()
+                    gameover()
+                elif val2 == "win":
+                    win()
+
             if settings_img.draw(screen):
                 game_val = "side"
             if exit_button.draw(screen):

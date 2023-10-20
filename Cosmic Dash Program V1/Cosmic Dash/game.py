@@ -74,6 +74,7 @@ def game():
     resume_button = buttons.Button(250,125,resume_img,0.5)
     exit_button = buttons.Button(250,375,exit_img,0.5)
     menu_button = buttons.Button(250,250,menu_img,0.5)
+
     
     #animations variables
     run_right = [pygame.image.load("avatar/tile008.png"),pygame.image.load("avatar/tile009.png"),pygame.image.load("avatar/tile010.png"),pygame.image.load("avatar/tile011.png")]
@@ -160,7 +161,10 @@ def game():
     obs = Sprite("images/meteor.png",(0,0),12,60)
     heart1 = Sprite('images/heart.png',(10,25))
     heart2 = Sprite('images/heart.png',(30,25))
-    scrap = Sprite('images/scrap.png',(10,25))
+    
+    ship = ["spacecraft/Arm1.png","spacecraft/Arm2.png","spacecraft/Arm3.png","spacecraft/Arm4.png"]
+    scrap = Sprite(ship[random.randint(0,3)],(10,25))
+
 
     # Create groups to hold enemy sprites and all sprites
     # - all_sprites is used for rendering
@@ -184,6 +188,7 @@ def game():
 
 
     while running:
+        
         
         # Scrolling background
         screen.blit(background.surf, (bgx-800,0))
@@ -260,7 +265,7 @@ def game():
                 if event.type == COLLIDEEVENT:
                     # pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound Effects/asteroid3.ogg'), maxtime=600)
                     if voice.get_busy():
-                        print("AAAAAAAAAAAAAAAAA")
+                        print("AAAAAAAAAAAAAAAAAAAAAA")
                     
                     if heart2.rect.x < 10000:
                         heart2.rect.x = 90000
@@ -275,7 +280,7 @@ def game():
                     
                 # Add win screen here
                 if event.type == WINEVENT:
-                    game_paused = True
+                    return "win"
                 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
@@ -327,6 +332,7 @@ def game():
                 # pygame.mixer.Channel(0).play(pygame.mixer.Sound('Sound Effects/asteroid.wav'), maxtime=600)
                 pygame.event.post(Collide_event)
                 
+                
             scrap2 = pygame.transform.scale(scrap.surf, (int(scrap.rect.height), int(scrap.rect.width)))
             
             scrap_rect = screen.blit(scrap2,(scrap_x,scrap_y))
@@ -339,12 +345,17 @@ def game():
                 scrap_spd = (random.randint(3,8) * spd_multi)
 
             if ply_rect.colliderect(scrap_rect):
+                scrap = Sprite(ship[random.randint(0,3)],(10,25))
                 scrap_x = 850
                 scrap_y = random.randint(200,400)
                 points += 1
          
         if points >= 15:
             pygame.event.post(Win_event)
+            return "win"
+            
+
+        
       
                 
                 
