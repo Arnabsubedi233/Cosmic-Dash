@@ -77,6 +77,8 @@ def home():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         run = False
+                if event.type == pygame.QUIT:
+                    quit()
             pygame.display.flip()
 
     def info():
@@ -102,7 +104,9 @@ def home():
         
 
         
-    pygame.mixer.pre_init(frequency=44100,size=-16,channels=10,buffer=4096)    
+    pygame.mixer.pre_init(frequency=44100,size=-16,channels=10,buffer=4096)
+    pygame.mixer.set_num_channels(8)
+    channel1 = pygame.mixer.Channel(1)
     #flag for mainloop
     run = True
     #clock for better frames

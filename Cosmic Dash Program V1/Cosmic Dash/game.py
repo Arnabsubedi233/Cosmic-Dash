@@ -9,10 +9,19 @@ import time
 
 
 def game():
+    pygame.mixer.pre_init(frequency=44100,size=-16,channels=10,buffer=4096)
+    pygame.mixer.init()
+    pygame.mixer.set_num_channels(8)
+    
+    voice = pygame.mixer.Channel(5)
+
     pygame.init()
 
     font=pygame.freetype.SysFont(None, 15)
     font.origin=True
+    
+    font2=pygame.freetype.SysFont(None, 30)
+    font2.origin=True
 
     # Import pygame.locals for easier access to key coordinates
     # Updated to conform to flake8 and black standards
@@ -32,6 +41,7 @@ def game():
     bgx = 0
     obs_x = 700
     obs_spd = 5
+    scrap_spd = 5
     spd_multi = 1
     fps = 60
     fps_count = 0
@@ -79,8 +89,7 @@ def game():
     class Player(pygame.sprite.Sprite):
         def __init__(self,image,left):
             super(Player, self).__init__()
-            self.surf = pygame.image.load(image).convert()
-            self.surf.set_colorkey((255, 255, 255), RLEACCEL)
+            self.surf = pygame.image.load(image).convert_alpha()
             self.rect = self.surf.get_rect(bottomleft= left)
             self.move_left = False
             self.move_right = False
@@ -132,11 +141,11 @@ def game():
         
 
     class Sprite(pygame.sprite.Sprite):
-        def __init__(self,image,top_left):
+        def __init__(self,image,top_left,offset = 0,characterWidth = 0):
             super().__init__()
-            self.surf = pygame.image.load(image).convert()
-            self.surf.set_colorkey((0,0,0), RLEACCEL)
+            self.surf = pygame.image.load(image).convert_alpha()
             self.rect = self.surf.get_rect(topleft = top_left)
+            self.otherrect = pygame.Rect(self.surf.get_rect().left, self.surf.get_rect().top, characterWidth, self.surf.get_rect().height- offset)
      
     def inverted(img):
        inv = pygame.Surface(img.get_rect().size, pygame.SRCALPHA)
@@ -148,7 +157,7 @@ def game():
     player = Player("avatar/tile001.png",(50,500))
     floor = Sprite("images/Floor.jpg",(0,500))
     background = Sprite("images/Cosmicbackground.jpg",(0,0))
-    obs = Sprite("images/meteor.png",(0,0))
+    obs = Sprite("images/meteor.png",(0,0),12,60)
     heart1 = Sprite('images/heart.png',(10,25))
     heart2 = Sprite('images/heart.png',(30,25))
     scrap = Sprite('images/scrap.png',(10,25))
@@ -160,7 +169,9 @@ def game():
     menu_border = pygame.image.load("images/menuborder.png")
     
     #audios
+
     asteriod_sfx = pygame.mixer.Sound("Sound Effects/asteroid.wav")
+    scrap_sfx = pygame.mixer.Sound("Sound Effects/coin2.wav")
     
     
 
@@ -204,7 +215,9 @@ def game():
         font.render_to(screen, (10, 20), out,pygame.Color('white'))
         fps_count += 1
         
-     
+        out = '{score}/15'.format(score=points)
+        font2.render_to(screen, (720,30),out,pygame.Color('white'))
+            
         # Life Points
         screen.blit(heart1.surf,heart1.rect)
         screen.blit(heart2.surf,heart2.rect)
@@ -242,9 +255,13 @@ def game():
             for event in pygame.event.get():
 
                 if event.type == SPEEDUPEVENT:
-                    spd_multi += 0.1
+                    spd_multi += 0.3
                     
                 if event.type == COLLIDEEVENT:
+                    # pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound Effects/asteroid3.ogg'), maxtime=600)
+                    if voice.get_busy():
+                        print("AAAAAAAAAAAAAAAAA")
+                    
                     if heart2.rect.x < 10000:
                         heart2.rect.x = 90000
                     else:
@@ -298,7 +315,8 @@ def game():
             # Displays the obstacle sprite and 
             # generates a new sprite each time it goes off screen with a new speed
             obs_rect = screen.blit(obs.surf,(obs_x,423))
-            asteriod_sfx.play()
+            obs_rect = obs_rect.inflate(-20,0)
+            
             obs_x -= obs_spd
             if obs_x < -100:
                 obs_x = 850
@@ -306,26 +324,28 @@ def game():
 
                 # Add Life Point system here (Currently ends game at collision)
             if ply_rect.colliderect(obs_rect):
+                # pygame.mixer.Channel(0).play(pygame.mixer.Sound('Sound Effects/asteroid.wav'), maxtime=600)
                 pygame.event.post(Collide_event)
                 
             scrap2 = pygame.transform.scale(scrap.surf, (int(scrap.rect.height), int(scrap.rect.width)))
             
             scrap_rect = screen.blit(scrap2,(scrap_x,scrap_y))
-            scrap_x -= obs_spd
+            scrap_rect = scrap_rect.inflate(-20,0)
+            scrap_x -= scrap_spd
               
             if scrap_x < -100:
                 scrap_x = 850
                 scrap_y = random.randint(200,400)
+                scrap_spd = (random.randint(3,8) * spd_multi)
 
             if ply_rect.colliderect(scrap_rect):
                 scrap_x = 850
                 scrap_y = random.randint(200,400)
                 points += 1
-                
-        if points > 15:
+         
+        if points >= 15:
             pygame.event.post(Win_event)
       
-                
                 
                 
                
