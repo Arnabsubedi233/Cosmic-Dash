@@ -193,7 +193,8 @@ def home():
             if home_button.draw(screen):
                 game_val = "main"
             if info_button.draw(screen):
-                pass
+                
+                
                 
 
         
