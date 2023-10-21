@@ -1,3 +1,4 @@
+from tkinter.font import BOLD
 import pygame
 import buttons
 import game
@@ -35,10 +36,12 @@ def home():
     info_button = buttons.Button(430,125,info_img,0.5)
     back_img = pygame.image.load("images/Back Square Button.png")
     back_button = buttons.Button(430,250,back_img,0.5)
+    exit_button2 = buttons.Button(250,500,exit_img,0.5)
     home_img = pygame.image.load("images/Home Square Button.png")
     home_button = buttons.Button(345,380,home_img,0.5)
 
     background = pygame.image.load("images/menu.jpg")
+    instructions = pygame.image.load("images/instructions.jpg")
 
     menu_border = pygame.image.load("images/menuborder.png")
 
@@ -83,10 +86,12 @@ def home():
                     quit()
             pygame.display.flip()
 
+        
 
     def gameover():
         pygame.init()
         game_over = pygame.image.load("images/gameover.png")
+        
 
          # Import pygame.locals for easier access to key coordinates
          # Updated to conform to flake8 and black standards
@@ -119,23 +124,36 @@ def home():
             pygame.display.flip()
 
     def info():
+        arrows = pygame.image.load("images/arrows.png")
+        space = pygame.image.load("images/space.png")
+        asteroid = pygame.image.load("images/meteor.png")
+        heart = pygame.image.load("images/heart.png")
+        part = pygame.image.load("spacecraft/wing3Red.png")
+
    
         pygame.font.init() # you have to call this at the start,
                    # if you want to use this module.
-        my_font = pygame.font.SysFont('Impact', 25,)
+        my_font = pygame.font.Font('GidoleFont/Gidole-Regular.ttf', 20,)
+        font_title = pygame.font.Font('GidoleFont/Gidole-Regular.ttf', 45)
         screen.fill(white)  
-        screen.blit(background,(0,0))
-        screen.blit(menu_border,(-16,60))
-        text_surface1 = my_font.render('Controls', False, (0, 0, 0))
-        screen.blit(text_surface1,(350,150))
-        text_surface2 = my_font.render('Space = Jump', False, (0, 0, 0))
-        screen.blit(text_surface2,(230,200))
-        text_surface3 = my_font.render('A/Left Arrow = move left', False, (0, 0, 0))
-        screen.blit(text_surface3,(230,275))
-        text_surface4 = my_font.render('D/Right arrow = move right', False, (0, 0, 0))
-        screen.blit(text_surface4,(230,350))
-        text_surface5 = my_font.render('Escape = Pause', False, (0, 0, 0))
-        screen.blit(text_surface5,(230,450))
+        screen.blit(instructions,(0,0))
+        text_surface1 = font_title.render('INSTRUCTIONS', False, (WHITE))
+        screen.blit(text_surface1,(250,50))
+        screen.blit(arrows,(50,150))
+        text_surface2 = my_font.render('You can move left and right with your left and right arrow key', False, (WHITE))
+        screen.blit(text_surface2,(150,150))
+        screen.blit(space,(50,225))
+        text_surface3 = my_font.render('You can Jump with the Spacebar to avoid incoming asteroids', False, (WHITE))
+        screen.blit(text_surface3,(150,225))
+        screen.blit(asteroid,(50,300))
+        text_surface4 = my_font.render('You have to avoid incoming asteroids ', False, (WHITE))
+        screen.blit(text_surface4,(150,300))
+        screen.blit(heart,(50,375))
+        text_surface5 = my_font.render('You have 2 lives so be wise with your next move', False, (WHITE))
+        screen.blit(text_surface5,(150,375))
+        screen.blit(part,(50,450))
+        text_surface6 = my_font.render('You have to collect 15 crashed space craft parts to get out', False, (WHITE))
+        screen.blit(text_surface6,(150,450))
         
 
         
@@ -184,6 +202,8 @@ def home():
             if exit_button.draw(screen):
                 run = False
         elif game_val == "side":
+            screen.fill(white)  
+            screen.blit(background,(0,0))
             if aud_button.draw(screen):
                 pass
             if music_button.draw(screen):
@@ -193,6 +213,11 @@ def home():
             if home_button.draw(screen):
                 game_val = "main"
             if info_button.draw(screen):
+                game_val = "info"
+        elif game_val == "info":
+            info()
+            if exit_button2.draw(screen):
+                game_val = "side"
                 
                 
                 
