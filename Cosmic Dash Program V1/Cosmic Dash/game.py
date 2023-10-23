@@ -7,7 +7,7 @@ import time
 
 
 
-
+    
 def game():
     pygame.mixer.pre_init(frequency=44100,size=-16,channels=10,buffer=4096)
     pygame.mixer.init()
@@ -186,7 +186,7 @@ def game():
     WINEVENT = pygame.USEREVENT + 3
     Win_event = pygame.event.Event(WINEVENT)
 
-
+    downsize = False
     while running:
         
         
@@ -233,7 +233,11 @@ def game():
             bgx = 0
 
         # Draw all sprites
-        ply_rect = screen.blit(player.surf, player.rect)
+        if downsize == False:
+            ply_rect = screen.blit(player.surf, player.rect)
+        elif downsize == True:
+            ply_rect = screen.blit(player.surf, player.rect)
+
         if ply_rect:
             player.right(0.1)
         
@@ -276,8 +280,10 @@ def game():
                     obs_x = 850
                     time.sleep(0.5)
                     spd_multi = 1
-                    player.surf = pygame.transform.scale(player.surf,(player.rect.height//2,player.rect.width))
+                    downsize = True
                     
+                    
+                
                 # Add win screen here
                 if event.type == WINEVENT:
                     return "win"
@@ -332,6 +338,11 @@ def game():
                 # pygame.mixer.Channel(0).play(pygame.mixer.Sound('Sound Effects/asteroid.wav'), maxtime=600)
                 pygame.event.post(Collide_event)
                 
+            if downsize == True:
+                    player.surf = pygame.transform.scale(player.surf,(player.rect.height//1.4,player.rect.width//1.4))
+            else: 
+                 pass
+
                 
             scrap2 = pygame.transform.scale(scrap.surf, (int(scrap.rect.height), int(scrap.rect.width)))
             

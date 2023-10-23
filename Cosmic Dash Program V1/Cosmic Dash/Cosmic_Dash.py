@@ -39,6 +39,10 @@ def home():
     exit_button2 = buttons.Button(250,500,exit_img,0.5)
     home_img = pygame.image.load("images/Home Square Button.png")
     home_button = buttons.Button(345,380,home_img,0.5)
+    audio_off = pygame.image.load("images/Audio Square Button Off.png")
+    audio_off_b = buttons.Button(280,125,audio_off,0.5)
+    music_off = pygame.image.load("images/Music Square Button Off.png")
+    music_off_b = buttons.Button(280,250,music_off,0.5)
 
     background = pygame.image.load("images/menu.jpg")
     instructions = pygame.image.load("images/instructions.jpg")
@@ -171,7 +175,7 @@ def home():
     game_over = pygame.mixer.Sound("Sound Effects/game over.mp3")
     #main loop
     game_restart = False
-
+    off = False
     music = True
     while run == True:
         #fills screen colour
@@ -205,9 +209,21 @@ def home():
             screen.fill(white)  
             screen.blit(background,(0,0))
             if aud_button.draw(screen):
-                pass
+                pygame.mixer.quit
+                off = not off
             if music_button.draw(screen):
                 music = not music
+
+            if music == False:
+                music_off_b.draw(screen)
+            else: 
+                pass
+            if off == True:
+                audio_off_b.draw(screen)
+            else:
+                pass
+
+                
             if back_button.draw(screen):
                 game_val = "main"
             if home_button.draw(screen):
