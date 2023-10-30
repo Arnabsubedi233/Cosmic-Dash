@@ -194,7 +194,7 @@ def home():
             if play_button.draw(screen):
                 val2 = game.game()
                 main.stop()
-                print(val2)
+                # print(val2)
                 if val2 == None:
                     game_over.play()
                     gameover()
