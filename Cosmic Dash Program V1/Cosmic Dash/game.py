@@ -7,6 +7,7 @@ import time
 
 
 
+
     
 def game():
     pygame.mixer.pre_init(frequency=44100,size=-16,channels=10,buffer=4096)
@@ -145,6 +146,7 @@ def game():
         def __init__(self,image,top_left,offset = 0,characterWidth = 0):
             super().__init__()
             self.surf = pygame.image.load(image).convert_alpha()
+            print(top_left)
             self.rect = self.surf.get_rect(topleft = top_left)
             self.otherrect = pygame.Rect(self.surf.get_rect().left, self.surf.get_rect().top, characterWidth, self.surf.get_rect().height- offset)
      
@@ -162,7 +164,7 @@ def game():
     heart1 = Sprite('images/heart.png',(10,25))
     heart2 = Sprite('images/heart.png',(30,25))
     
-    ship = ["spacecraft/Arm1.png","spacecraft/Arm2.png","spacecraft/Arm3.png","spacecraft/Arm4.png"]
+    ship = ["spacecraft/cockpit1Green.png","spacecraft/cockpit2Green.png","spacecraft/cockpit3Green.png","spacecraft/cockpit4Green.png","spacecraft/cockpit5Green.png","spacecraft/wing1Green.png","spacecraft/wing2Green.png","spacecraft/wing3Green.png","spacecraft/wing4Green.png"]
     scrap = Sprite(ship[random.randint(0,3)],(10,25))
 
 
@@ -339,7 +341,10 @@ def game():
                 pygame.event.post(Collide_event)
                 
             if downsize == True:
-                    player.surf = pygame.transform.scale(player.surf,(player.rect.height//1.4,player.rect.width//1.4))
+                    player.surf = pygame.transform.scale(player.surf,(player.rect.height//1.4,player.rect.width//1.4))  
+                   
+                    #print(player.rect)
+                    #player.rect = player.surf.get_rect(topleft = )
             else: 
                  pass
 
