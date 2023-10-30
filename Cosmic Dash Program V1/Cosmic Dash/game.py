@@ -327,7 +327,7 @@ def game():
                 if y_change > 0 or player.rect.bottom < 525:
                     player.rect.bottom -= y_change
                     y_change -= gravity
-                if player.rect.bottom > 525:
+                if player.rect.bottom > 520:
                     player.rect.bottom = 519
                 if player.rect.bottom == 520 and y_change < 0:
                     y_change = 0
