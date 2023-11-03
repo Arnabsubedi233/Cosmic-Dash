@@ -146,7 +146,7 @@ def game():
         def __init__(self,image,top_left,offset = 0,characterWidth = 0):
             super().__init__()
             self.surf = pygame.image.load(image).convert_alpha()
-            print(top_left)
+            # print(top_left)
             self.rect = self.surf.get_rect(topleft = top_left)
             self.otherrect = pygame.Rect(self.surf.get_rect().left, self.surf.get_rect().top, characterWidth, self.surf.get_rect().height- offset)
      
@@ -187,6 +187,8 @@ def game():
     Collide_event = pygame.event.Event(COLLIDEEVENT)
     WINEVENT = pygame.USEREVENT + 3
     Win_event = pygame.event.Event(WINEVENT)
+    DOWNEVENT = pygame.USEREVENT + 4
+    downevent = pygame.event.Event(DOWNEVENT)
 
     downsize = False
     while running:
@@ -271,7 +273,8 @@ def game():
                 if event.type == COLLIDEEVENT:
                     # pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound Effects/asteroid3.ogg'), maxtime=600)
                     if voice.get_busy():
-                        print("AAAAAAAAAAAAAAAAAAAAAA")
+                        pass
+                        # print("AAAAAAAAAAAAAAAAAAAAAA")
                     
                     if heart2.rect.x < 10000:
                         heart2.rect.x = 90000
@@ -283,12 +286,17 @@ def game():
                     time.sleep(0.5)
                     spd_multi = 1
                     downsize = True
+                    pygame.event.post(downevent)
                     
                     
                 
                 # Add win screen here
                 if event.type == WINEVENT:
                     return "win"
+                
+                if event.type == DOWNEVENT:
+                    if downsize == True:  
+                        player.rect.bottom = 519
                 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
@@ -306,13 +314,23 @@ def game():
     
             # This checks the avatars current position 
             # And changes its position when needed
-            if y_change > 0 or player.rect.bottom < 500:
-                player.rect.bottom -= y_change
-                y_change -= gravity
-            if player.rect.bottom > 500:
-                player.rect.bottom = 500
-            if player.rect.bottom == 500 and y_change < 0:
-                y_change = 0
+            if downsize == False:
+                if y_change > 0 or player.rect.bottom < 500:
+                    player.rect.bottom -= y_change
+                    y_change -= gravity
+                if player.rect.bottom > 500:
+                    player.rect.bottom = 500
+                if player.rect.bottom == 500 and y_change < 0:
+                    y_change = 0
+                    
+            elif downsize == True:
+                if y_change > 0 or player.rect.bottom < 525:
+                    player.rect.bottom -= y_change
+                    y_change -= gravity
+                if player.rect.bottom > 520:
+                    player.rect.bottom = 519
+                if player.rect.bottom == 520 and y_change < 0:
+                    y_change = 0
             
             keys = pygame.key.get_pressed()
             player.move_left  = keys[pygame.K_LEFT]  and not keys[pygame.K_RIGHT]
@@ -342,7 +360,7 @@ def game():
                 
             if downsize == True:
                     player.surf = pygame.transform.scale(player.surf,(player.rect.height//1.4,player.rect.width//1.4))  
-                   
+
                     #print(player.rect)
                     #player.rect = player.surf.get_rect(topleft = )
             else: 
